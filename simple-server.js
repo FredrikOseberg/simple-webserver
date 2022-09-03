@@ -15,7 +15,7 @@ class SimpleServer extends Router {
         const requestObject = this.httpParser.parse(httpMessage);
 
         const req = new Request(requestObject);
-        const res = new Response(connection);
+        const res = new Response(connection, 'HTTP/1.1');
 
         const handler = this.getRoute(req.method, req.path);
 
