@@ -22,7 +22,7 @@ class SimpleServer extends Router {
         if (typeof handler === 'function') {
           handler(req, res);
         } else {
-          connection.write(`HTTP/1.1 404 Not found`);
+          connection.write(`HTTP/1.1 404 Not found\r\n`);
           connection.end();
         }
       });

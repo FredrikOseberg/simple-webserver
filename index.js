@@ -1,8 +1,8 @@
 const SimpleServer = require('./simple-server');
 
-const rootHandler = (req, res) => {
-  res.headers.set('Content-Type', 'text/html');
-  res.headers.set('Authorization', 'none');
+const server = new SimpleServer();
+
+server.get('/', (req, res) => {
   res.send(`<!DOCTYPE html>
 <html lang="en">
   <head>
@@ -16,27 +16,60 @@ const rootHandler = (req, res) => {
   </head>
 
   <body>
-    <h1>Hello from webserver</h1>
+    <h1>Hello from another server</h1>
   </body>
 </html>`);
-};
+});
 
-const receiveData = (req, res) => {
+const authSecret = 'unique-132';
+
+server.post('/receive', (req, res) => {
   let data;
   try {
-    data = JSON.parse(req.body);
+    if (req.headers.get('Content-Type') === 'application/json') {
+      data = JSON.parse(req.body);
+    }
   } catch (e) {
     console.log(e);
   }
 
-  res.headers.set('Content-Type', 'text/plain');
-  res.headers.set('Authorization', 'none');
-  res.send(`Hello from webserver, ${data.name}`);
-};
+  const requestAuth = req.headers.get('Authorization');
 
-const server = new SimpleServer();
+  if (requestAuth === authSecret) {
+    res.headers.set('Content-Type', 'text/plain');
+    res.headers.set('Authorization', 'none');
+    res.send(`hello from webserver, ${data.name}`);
+  }
+  res.setStatus(401).send('You are not authorized to access this content');
+});
 
-server.get('/', rootHandler);
-server.post('/receive', receiveData);
+server.options('/books', (req, res) => {
+  console.log('OPTIONS TRIGGERED');
+  res.headers.set('Access-Control-Allow-Origin', 'http://localhost:3200');
 
-server.listenAndServe(5100);
+  res.send();
+});
+
+server.get('/books', (req, res) => {
+  res.headers.set('Content-Type', 'application/json');
+  res.headers.set('Access-Control-Allow-Origin', 'http://localhost:3200');
+
+  res.send(
+    JSON.stringify([
+      { title: 'A song of ice and fire' },
+      { title: 'Lord of the rings' },
+      { title: 'The hobbit' },
+      { title: 'Harry Potter and the Philosophers stone' },
+    ])
+  );
+  // HTTP/1.1 200 Ok
+  //
+  //  [
+  //     { title: 'A song of ice and fire' },
+  //     { title: 'Lord of the rings' },
+  //     { title: 'The hobbit' },
+  //     { title: 'Harry Potter and the Philosophers stone' },
+  //   ]
+});
+
+server.listenAndServe(3000);

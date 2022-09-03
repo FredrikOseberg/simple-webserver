@@ -22,16 +22,20 @@ class Router {
     this.setRoute(this.routes['PUT'], path, handler);
   };
 
-  patch = (path, handler) => {
-    this.setRoute(this.routes['PATCH'], path, handler);
-  };
-
   delete = (path, handler) => {
     this.setRoute(this.routes['DELETE'], path, handler);
   };
 
-  getRoute = (verb, path) => {
-    return this.routes[verb][path];
+  patch = (path, handler) => {
+    this.setRoute(this.routes['PATCH'], path, handler);
+  };
+
+  options = (path, handler) => {
+    this.setRoute(this.routes['OPTIONS'], path, handler);
+  };
+
+  getRoute = (method, path) => {
+    return this.routes[method][path];
   };
 
   setRoute = (currentPath, path, handler) => {
