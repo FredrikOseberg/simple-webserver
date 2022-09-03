@@ -5,6 +5,7 @@ const statusTexts = {
   404: 'Not found',
   500: 'Internal server error',
   401: 'Unauthorized',
+  204: 'No content',
 };
 
 class Response {

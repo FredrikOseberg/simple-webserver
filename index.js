@@ -44,15 +44,16 @@ server.post('/receive', (req, res) => {
 });
 
 server.options('/books', (req, res) => {
-  console.log('OPTIONS TRIGGERED');
-  res.headers.set('Access-Control-Allow-Origin', 'http://localhost:3200');
+  res.headers.set('Access-Control-Allow-Origin', '*');
+  res.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.headers.set('Access-Control-Allow-Headers', 'Content-Type');
 
-  res.send();
+  res.setStatus(204).send();
 });
 
 server.get('/books', (req, res) => {
   res.headers.set('Content-Type', 'application/json');
-  res.headers.set('Access-Control-Allow-Origin', 'http://localhost:3200');
+  res.headers.set('Access-Control-Allow-Origin', '*');
 
   res.send(
     JSON.stringify([
